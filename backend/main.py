@@ -42,3 +42,22 @@ async def chat(request: ChatRequest):
     except Exception as e:
         # Log this in real systems
         raise HTTPException(status_code=500, detail=str(e))
+
+
+from fastapi import UploadFile, File
+import shutil
+import uuid
+import os
+
+UPLOAD_DIR = 'backend/uploads'
+
+@app.post('/upload-doc')
+async def upload_doc(file: UploadFile = File(...)):
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    unique_name = f'{uuid.uuid4()}_{file.filename}'
+    file_path = os.path.join(UPLOAD_DIR, file.filename)
+
+    with open(file_path, 'wb') as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    return {'message':'File uploaded successfully', 'filename': file.filename}
