@@ -1,16 +1,9 @@
+from llama_index.core import SimpleDirectoryReader
 
-import os
-import fitz
+def document_loader(path : str):
+    docs = SimpleDirectoryReader(path).load_data()
+    return docs
 
-def load_documents(directory):
-    documents = []
-
-    for filename in os.listdir(directory):
-        file_path = os.path.join(directory, filename)
-
-        doc = fitz.open(file_path)
-        for page in doc:
-            text = page.get_text()
-            documents.append(text)
-
-        if not filename.endswith('.pdf')
+# data = document_loader('backend/uploads')
+# print(data[0].text[:500])
+    
