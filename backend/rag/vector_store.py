@@ -1,17 +1,29 @@
-from llama_index.core import VectorStoreIndex
-from llama_index.vector_stores.faiss import FaissVectorStore
-import faiss
+import numpy as np
+from .embedding import get_embedding
 
-def create_vector_store(nodes):
+class SimpleVectorStore:
+    def __init__(self):
+        self.vectors = []
+        self.texts = []
 
-    dimension = 1536
-    faiss_index = faiss.IndexFlatL2(dimension)
+    def add(self, nodes):
+        for i,node in  enumerate( nodes):
+            print(f"processing node {i}")
+            emb = get_embedding(node.text)
 
-    vector_store = FaissVectorStore(faiss_index=faiss_index)
+            if emb is node:
+                print("embeding failed!")
 
-    index = VectorStoreIndex(
-        nodes,
-        vector_store = vector_store
+            self.vectors.append(emb)
+            self.texts.append(node.text)
 
-    )
-    return index
+    def search(self, query, top_k=3):
+        query_emb= get_embedding(query)
+
+        similarities = []
+
+        for i, vec in enumerate(self.vectors):
+            score = np.dot(query_emb, vec) / (np.linalg.norm(query_emb)*np.linalg.norm(vec))
+            similarities.append(score, self.texts[i])
+        similarities.sort(reverse=True)
+        return [text for _, text in similarities[:top_k]]
