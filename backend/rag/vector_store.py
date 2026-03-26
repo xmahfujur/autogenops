@@ -17,7 +17,7 @@ class SimpleVectorStore:
             self.vectors.append(emb)
             self.texts.append(node.text)
 
-    def search(self, query, top_k=3):
+    def search(self, query, top_k=5):
         query_emb= get_embedding(query)
 
         similarities = []
@@ -26,4 +26,8 @@ class SimpleVectorStore:
             score = np.dot(query_emb, vec) / (np.linalg.norm(query_emb)*np.linalg.norm(vec))
             similarities.append(score, self.texts[i])
         similarities.sort(reverse=True)
-        return [text for _, text in similarities[:top_k]]
+        filltered = [text for score, text in similarities if score > 0.5]
+        return filltered[:top_k]
+    
+# v1 = SimpleVectorStore()
+# print(len(v1.vectors))

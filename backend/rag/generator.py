@@ -7,8 +7,13 @@ def generate_answer(query, contexts):
     context_text = "\n\n".join(contexts)
 
     prompt = f"""
-    Answer the question using ONLY the context below.
+You are a strict AI assistant.
 
+Rules:
+1. Answer ONLY from the provided context
+2. If answer is not in context → say "I don't know"
+3. Do NOT guess
+4. Be concise and accurate
     Context:
     {context_text}
 
@@ -19,6 +24,9 @@ def generate_answer(query, contexts):
         model=MODEL_NAME,
         contents=prompt
     )
-    return response.text
+    return {
+        'answer': response.text,
+        'source' : contexts
+    }
 
 
