@@ -12,5 +12,5 @@ def chunk_documents(documents):
 docs = document_loader('backend/uploads')
 nodes = chunk_documents(docs)
 
-# print(len(nodes))
-# print(nodes[1].text)
+print(len(nodes))
+print(nodes[1].text)
