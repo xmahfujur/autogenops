@@ -28,4 +28,25 @@ async def chat(request : CharRequest):
     
     return ResponseChat(response=response.text)
     
+from fastapi import UploadFile, File, HTTPException
+import shutil
+import os
+
+UPLOAD_DIR = 'backend/uploads'
+
+@app.post('/upload-doc')
+async def upload_doc(file : UploadFile = File(...)):
+    try:
+        file_path = os.path.join(UPLOAD_DIR, file.filename)
+    
+    
+        with open(file_path, 'wb') as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        return {
+            'message' : 'File uploaded successfully', 
+            'filename' : file.filename
+        }
+    except:
+        raise HTTPException(status_code=500, detail='bad request')
     
