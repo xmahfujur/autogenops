@@ -1,14 +1,19 @@
 from llama_index.core import SimpleDirectoryReader
-from llama_index.readers.file import PDFReader
 from llama_index.readers.file import PyMuPDFReader
-import fitz
+
 file_extractor = {
-    '.pdf' : PyMuPDFReader(),
+    '.pdf' : PyMuPDFReader()
 }
 
-docs = SimpleDirectoryReader(
-    input_dir='backend/uploads',
-    file_extractor=file_extractor
-).load_data()
-
-print(docs[0].text[:200])
+def document_loader(path: str):
+    documents = SimpleDirectoryReader(
+        input_dir=path,
+        file_extractor=file_extractor
+    ).load_data()
+    
+    return documents
+docs = document_loader('backend/uploads')
+# if docs:
+#     print(docs[0].text[:500])
+# else:
+#     print('No file')
